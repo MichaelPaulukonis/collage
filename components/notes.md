@@ -88,3 +88,24 @@ Otherwise, as shows in the next-s3-upload setup example
     }
 ]
 ```
+
+## Cloudfront
+
+- <https://aws.amazon.com/blogs/networking-and-content-delivery/amazon-s3-amazon-cloudfront-a-match-made-in-the-cloud/>
+
+
+- <https://cf-simple-s3-origin-cloudfront-fors3-996629382901.s3.amazonaws.com/collage-1643085786.png>
+
+- <https://d22pac3pkawo9o.cloudfront.net/collage-1643085786.png>
+
+
+https://collagesmjp.s3.amazonaws.com/collage-1643085786.png
+https://cf-simple-s3-origin-cloudfront-fors3-996629382901.s3.amazonaws.com/next-s3-uploads/87d088de-a6b6-4216-86dd-e4768e5dba9a/push-1643515743.png
+
+`${S3_UPLOAD_BUCKET}.s3.amazonaws.com`
+CLOUDFRONT
+d22pac3pkawo9o.cloudfront.net
+
+l.replace('cf-simple-s3-origin-cloudfront-fors3-996629382901.s3.amazonaws.com', 'd22pac3pkawo9o.cloudfront.net')
+
+https://cf-simple-s3-origin-cloudfront-fors3-996629382901.s3.amazonaws.com/next-s3-uploads/87d088de-a6b6-4216-86dd-e4768e5dba9a/push-1643515743.png

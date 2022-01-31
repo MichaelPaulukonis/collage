@@ -6,7 +6,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "db-studio": "prisma studio"
+    "db:studio": "eval $(egrep -v '^#' .env.local | xargs) prisma studio"
   },
   "keywords": [],
   "author": "",

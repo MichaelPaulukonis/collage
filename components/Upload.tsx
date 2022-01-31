@@ -43,7 +43,6 @@ export default function UploadTest({
       },
     });
     const mostRecentCollage = await recentResponse.json();
-    // const mostRecentCollage = dummy
 
     const newValues = JSON.parse(mostRecentCollage.values).map(
       (v: number) => v - 200
@@ -113,7 +112,7 @@ export default function UploadTest({
         setMessage("processing image");
 
         const collageName =
-          "push-" + Math.round(new Date().getTime() / 1000) + ".png";
+          "collage-" + Math.round(new Date().getTime() / 1000) + ".png";
         let res = await fetch(`/api/s3-upload?filename=${collageName}`);
         let data = await res.json();
 
@@ -126,7 +125,6 @@ export default function UploadTest({
 
         baseCanvas.toBlob(async (blob) => {
           let params = {
-            // ACL: "public-read",
             Bucket: data.bucket,
             Key: data.key,
             Body: blob,
@@ -138,10 +136,11 @@ export default function UploadTest({
 
           let uploadResult = await s3Upload.promise();
 
-          let { Location } = uploadResult;
+          let { Location: location } = uploadResult;
+          location = location.replace(process.env.NEXT_PUBLIC_BUCKET_FULL, process.env.NEXT_PUBLIC_CLOUDFRONT)
 
-          // let Location = 'foobar';
-
+          // TODO: what if...... the prefix (location) wasn't stored at all, just the paths etc?
+      
           const valueJson = JSON.stringify(newValues);
           await fetch("api/collage", {
             method: "POST",
@@ -149,7 +148,7 @@ export default function UploadTest({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              src: Location,
+              src: location,
               values: valueJson,
             }),
           })
