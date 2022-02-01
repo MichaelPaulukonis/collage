@@ -164,7 +164,6 @@ const Assembler: React.FC<{ collage: any; showLoading: boolean }> = ({
     const baseCanvas = baseCanvasRef.current;
     setShowImageLoader(true);
 
-    const baseValues = Array(4096).fill(0);
     const cellSize = 32;
     baseCanvas.width = 2048;
     baseCanvas.height = 2048;

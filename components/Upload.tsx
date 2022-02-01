@@ -4,7 +4,64 @@ import S3 from "aws-sdk/clients/s3";
 import { getBase64Strings } from "exif-rotate-js/lib";
 import Loader from "react-loader-spinner";
 
-import dummy from "./starter.json"
+
+function makeCollage(cellSize: number, cellCx: CanvasRenderingContext2D, tempCanvas: HTMLCanvasElement, cellCanvas: HTMLCanvasElement, newValues: any, bcx: any) {
+  for (let r = 0; r < 2048 / cellSize; r++) {
+    for (let c = 0; c < 2048 / cellSize; c++) {
+      cellCx.clearRect(0, 0, cellSize, cellSize);
+      cellCx.drawImage(
+        tempCanvas,
+        c * cellSize,
+        r * cellSize,
+        cellSize,
+        cellSize,
+        0,
+        0,
+        cellSize,
+        cellSize
+      );
+
+      const index = r * (2048 / cellSize) + c;
+      const value = cellCanvas.toDataURL().length;
+      if (value > newValues[index]) {
+        newValues[index] = value;
+        bcx.drawImage(
+          cellCanvas,
+          0,
+          0,
+          cellSize,
+          cellSize,
+          c * cellSize,
+          r * cellSize,
+          cellSize,
+          cellSize
+        );
+      }
+    }
+  }
+}
+
+function makeFavIcon(baseCanvas: any): void {
+  const faviconCanvas = document.createElement("canvas");
+  faviconCanvas.width = 32;
+  faviconCanvas.height = 32;
+  const faviconCx = faviconCanvas.getContext("2d");
+  faviconCx.drawImage(
+    baseCanvas,
+    0,
+    0,
+    baseCanvas.width,
+    baseCanvas.height,
+    0,
+    0,
+    32,
+    32
+  );
+  faviconCanvas.toBlob(async (blob) => {
+    const link = document.querySelector("link[rel*='icon']");
+    link.setAttribute("href", URL.createObjectURL(blob));
+  });
+}
 
 export default function UploadTest({
   setCollage,
@@ -76,39 +133,7 @@ export default function UploadTest({
           rows * cellSize
         );
 
-        for (let r = 0; r < 2048 / cellSize; r++) {
-          for (let c = 0; c < 2048 / cellSize; c++) {
-            cellCx.clearRect(0, 0, cellSize, cellSize);
-            cellCx.drawImage(
-              tempCanvas,
-              c * cellSize,
-              r * cellSize,
-              cellSize,
-              cellSize,
-              0,
-              0,
-              cellSize,
-              cellSize
-            );
-
-            const index = r * (2048 / cellSize) + c;
-            const value = cellCanvas.toDataURL().length;
-            if (value > newValues[index]) {
-              newValues[index] = value;
-              bcx.drawImage(
-                cellCanvas,
-                0,
-                0,
-                cellSize,
-                cellSize,
-                c * cellSize,
-                r * cellSize,
-                cellSize,
-                cellSize
-              );
-            }
-          }
-        }
+        makeCollage(cellSize, cellCx, tempCanvas, cellCanvas, newValues, bcx);
         setMessage("processing image");
 
         const collageName =
@@ -157,26 +182,7 @@ export default function UploadTest({
               json.src = URL.createObjectURL(blob);
               setCollage(json);
               setShowLoading(false);
-
-              const faviconCanvas = document.createElement("canvas");
-              faviconCanvas.width = 32;
-              faviconCanvas.height = 32;
-              const faviconCx = faviconCanvas.getContext("2d");
-              faviconCx.drawImage(
-                baseCanvas,
-                0,
-                0,
-                baseCanvas.width,
-                baseCanvas.height,
-                0,
-                0,
-                32,
-                32
-              );
-              faviconCanvas.toBlob(async (blob) => {
-                const link = document.querySelector("link[rel*='icon']");
-                link.setAttribute("href", URL.createObjectURL(blob));
-              });
+              makeFavIcon(baseCanvas);
             });
         });
       };

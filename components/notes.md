@@ -1,5 +1,12 @@
 NOTES
 
+# how things work
+
+Assembler handles UI and presentation of the canvas
+The magic happens inside of Upload, which also does the download
+
+
+# db setup etc
 GRANT CONNECT ON DATABASE mydb TO postgres ;
 
 the mostRecent query
